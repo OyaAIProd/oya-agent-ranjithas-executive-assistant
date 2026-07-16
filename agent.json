@@ -1,0 +1,361 @@
+{
+  "agent_id": "edba46a5-7c60-42f9-856e-f2ab1e900780",
+  "name": "Ranjitha's Executive Assistant",
+  "mode": "skills",
+  "deploy_status": "draft",
+  "chat_model": "gemini/gemini-3.5-flash",
+  "system_prompt": "",
+  "scratchpad": "",
+  "soul": {
+    "persona": "You are Aria, Ranjitha's executive assistant \u2014 sharp, warm, and unflappable. You run her inbox and calendar the way a seasoned chief-of-staff would: anticipating needs, protecting her time, and surfacing only what truly matters. You write in Ranjitha's own voice \u2014 concise, friendly, and decisive \u2014 and you never let a ball drop. You think in priorities, not tasks: what moves Ranjitha's day forward, what can wait, and what she can safely ignore. You are proactive, discreet with sensitive information, and relentlessly organized.",
+    "brand": {},
+    "behavior_rules": [
+      "Triage every incoming email into: Needs Ranjitha, Draft-and-hold, FYI, or Ignore. Only interrupt her for the first bucket.",
+      "Draft replies in Ranjitha's voice \u2014 concise, warm, decisive. Always show the draft for approval before sending unless she has pre-authorized that thread.",
+      "Guard the calendar: flag conflicts, protect focus blocks and meal breaks, and never double-book. Propose 2-3 concrete time options when scheduling.",
+      "Send a Morning Brief each weekday: today's agenda, top 3 priorities, emails awaiting her reply, and anything at risk of slipping.",
+      "Confirm before any irreversible or outbound action \u2014 sending email, accepting/declining invites, or sharing files. When in doubt, ask.",
+      "Respect timezones and working hours. Assume Ranjitha's local time; never schedule outside her stated working hours without flagging it.",
+      "Remember Ranjitha's preferences, VIP contacts, and recurring commitments using memory. Apply them without being re-told.",
+      "Be brief. Lead with the answer or the recommendation, then the reasoning. No filler, no corporate hedging."
+    ],
+    "welcome_message": "Hi Ranjitha \u2014 I'm Aria, your executive assistant. I'll keep your inbox triaged, your calendar protected, and your mornings starting with a clear brief. Want me to run through today's agenda to start?"
+  },
+  "skills": [
+    {
+      "skill_id": "current-time",
+      "name": "Time & Date Utilities",
+      "description": "Get current time, convert timezones, calculate date differences, and more",
+      "skill_type": "tool",
+      "category": "general",
+      "catalog_type": "core",
+      "config": {}
+    },
+    {
+      "skill_id": "fetch-url",
+      "name": "Fetch URL",
+      "description": "Fetch and extract content from a web URL \u2014 articles, documentation, links, or API responses",
+      "skill_type": "tool",
+      "category": "general",
+      "catalog_type": "core",
+      "config": {}
+    },
+    {
+      "skill_id": "gmail",
+      "name": "Gmail",
+      "description": "Comprehensive Gmail \u2014 read, search, send, reply, draft, label, and manage emails",
+      "skill_type": "sandbox",
+      "category": "communication",
+      "catalog_type": "platform",
+      "config": {},
+      "config_schema": {
+        "properties": {
+          "send_rules": {
+            "type": "text",
+            "group": "rules",
+            "label": "Send Rules",
+            "description": "Rules for when and how the LLM should send emails",
+            "placeholder": "- Always confirm with user before sending\n- Include a clear subject line\n- Keep emails professional and concise"
+          },
+          "label_rules": {
+            "type": "text",
+            "group": "rules",
+            "label": "Label Rules",
+            "description": "Rules for auto-labeling emails",
+            "placeholder": "- Label invoices as 'Finance/Invoices'\n- Label support emails as 'Support'\n- Apply 'Action Required' to urgent items"
+          },
+          "max_results": {
+            "type": "number",
+            "group": "defaults",
+            "label": "Default Max Results",
+            "default": 10,
+            "description": "Default number of emails to return in list/search"
+          },
+          "reply_rules": {
+            "type": "text",
+            "group": "rules",
+            "label": "Reply Rules",
+            "description": "Rules for replying to emails",
+            "placeholder": "- Quote relevant parts of the original message\n- Address all points raised in the original\n- Use Reply-All only when explicitly requested"
+          },
+          "safety_rules": {
+            "type": "text",
+            "group": "rules",
+            "label": "Safety Rules",
+            "description": "Safety constraints for email operations",
+            "placeholder": "- Never send to more than 10 recipients at once\n- Always confirm before trashing emails\n- Never auto-reply to external senders"
+          },
+          "default_from_name": {
+            "type": "string",
+            "group": "defaults",
+            "label": "Default Sender Name",
+            "description": "Display name for outgoing emails",
+            "placeholder": "AI Assistant"
+          },
+          "default_signature": {
+            "type": "text",
+            "group": "defaults",
+            "label": "Email Signature",
+            "description": "Signature appended to outgoing emails",
+            "placeholder": "---\nSent by AI Assistant"
+          }
+        }
+      },
+      "resource_requirements": [
+        {
+          "name": "Gmail Credentials JSON",
+          "env_var": "GMAIL_CREDENTIALS_JSON",
+          "description": "OAuth2 credentials JSON (auto-provided by gateway connection)"
+        },
+        {
+          "name": "Gmail User Email",
+          "env_var": "GMAIL_USER_EMAIL",
+          "description": "Email address of the connected Gmail account"
+        }
+      ]
+    },
+    {
+      "skill_id": "google-calendar",
+      "name": "Google Calendar",
+      "description": "Comprehensive Google Calendar \u2014 list, create, update, reschedule, delete events, manage guests, add Google Meet, check availability, and more",
+      "skill_type": "sandbox",
+      "category": "productivity",
+      "catalog_type": "platform",
+      "config": {},
+      "config_schema": {
+        "properties": {
+          "timezone": {
+            "type": "string",
+            "group": "defaults",
+            "label": "Timezone",
+            "description": "Default timezone for events",
+            "placeholder": "America/New_York"
+          },
+          "event_rules": {
+            "type": "text",
+            "group": "rules",
+            "label": "Event Rules",
+            "description": "Rules for creating and managing events",
+            "placeholder": "- Always add Google Meet to meetings with guests\n- Default to 30 min for 1:1s\n- Include agenda in description"
+          },
+          "invite_rules": {
+            "type": "text",
+            "group": "rules",
+            "label": "Invite Rules",
+            "description": "Rules for adding attendees and sending invitations",
+            "placeholder": "- Confirm with user before inviting external guests\n- Always set RSVP to needsAction for new guests"
+          },
+          "default_calendar": {
+            "type": "string",
+            "group": "defaults",
+            "label": "Default Calendar ID",
+            "default": "primary",
+            "description": "Calendar ID to use when not specified",
+            "placeholder": "primary"
+          },
+          "default_duration": {
+            "type": "select",
+            "group": "defaults",
+            "label": "Default Duration",
+            "default": "30 min",
+            "options": [
+              "15 min",
+              "30 min",
+              "45 min",
+              "1 hour",
+              "1.5 hours",
+              "2 hours"
+            ],
+            "description": "Default meeting duration when not specified"
+          }
+        }
+      },
+      "resource_requirements": [
+        {
+          "name": "Google Calendar Credentials JSON",
+          "env_var": "GOOGLE_SERVICE_ACCOUNT_JSON",
+          "description": "OAuth2 credentials JSON (auto-provided by gateway connection)"
+        },
+        {
+          "name": "Calendar ID",
+          "env_var": "CALENDAR_ID",
+          "description": "Google Calendar ID (default: primary)"
+        }
+      ]
+    },
+    {
+      "skill_id": "google-drive",
+      "name": "Google Drive",
+      "description": "Manage Google Drive \u2014 list, search, create, upload, share, and organize files, folders, docs, and sheets",
+      "skill_type": "sandbox",
+      "category": "productivity",
+      "catalog_type": "platform",
+      "config": {},
+      "config_schema": {
+        "properties": {
+          "file_rules": {
+            "type": "text",
+            "group": "rules",
+            "label": "File Organization Rules",
+            "description": "Rules for how the LLM should organize files and folders",
+            "placeholder": "- Create project folders with date prefix (YYYY-MM-DD)\n- Always share with the team group email\n- Use descriptive file names"
+          },
+          "naming_rules": {
+            "type": "text",
+            "group": "rules",
+            "label": "Naming Conventions",
+            "description": "Rules for file and folder naming",
+            "placeholder": "- Use kebab-case for file names\n- Prefix project docs with project code\n- Include version numbers for iterations"
+          },
+          "sharing_rules": {
+            "type": "text",
+            "group": "rules",
+            "label": "Sharing Rules",
+            "description": "Rules for file sharing permissions",
+            "placeholder": "- Default to viewer access\n- Only give editor access when explicitly requested\n- Always notify when sharing"
+          },
+          "default_folder_id": {
+            "type": "string",
+            "group": "defaults",
+            "label": "Default Folder ID",
+            "default": "root",
+            "description": "Default folder ID for file operations (use 'root' for My Drive root)",
+            "placeholder": "root"
+          },
+          "default_share_role": {
+            "type": "select",
+            "group": "defaults",
+            "label": "Default Share Role",
+            "default": "reader",
+            "options": [
+              "reader",
+              "commenter",
+              "writer"
+            ],
+            "description": "Default permission role when sharing files"
+          }
+        }
+      },
+      "resource_requirements": [
+        {
+          "name": "Google Drive Credentials JSON",
+          "env_var": "GOOGLE_DRIVE_CREDENTIALS_JSON",
+          "description": "OAuth2 credentials JSON (auto-provided by gateway connection)"
+        },
+        {
+          "name": "Google Drive User Email",
+          "env_var": "GOOGLE_DRIVE_USER_EMAIL",
+          "description": "Email address of the connected Google account"
+        }
+      ]
+    },
+    {
+      "skill_id": "google-sheets",
+      "name": "Google Sheets",
+      "description": "Read, write, and manage Google Sheets spreadsheets",
+      "skill_type": "sandbox",
+      "category": "productivity",
+      "catalog_type": "platform",
+      "config": {},
+      "resource_requirements": [
+        {
+          "name": "Google Sheets Credentials",
+          "env_var": "GOOGLE_SHEETS_CREDENTIALS_JSON",
+          "description": "Google OAuth credentials JSON (auto-provided by gateway connection)"
+        },
+        {
+          "name": "Google Account Email",
+          "env_var": "GOOGLE_SHEETS_USER_EMAIL",
+          "description": "Email of the connected Google account"
+        }
+      ]
+    },
+    {
+      "skill_id": "memory",
+      "name": "Agent Memory",
+      "description": "Remember and recall facts about users and context across conversations, and manage your persistent scratchpad/brain",
+      "skill_type": "tool",
+      "category": "general",
+      "catalog_type": "core",
+      "config": {}
+    },
+    {
+      "skill_id": "rest-api",
+      "name": "REST API Call",
+      "description": "Make HTTP requests to external APIs \u2014 GET, POST, PUT, PATCH, DELETE",
+      "skill_type": "tool",
+      "category": "general",
+      "catalog_type": "core",
+      "config": {}
+    },
+    {
+      "skill_id": "search-kb",
+      "name": "Knowledge Base",
+      "description": "Search the agent's uploaded documents and knowledge base",
+      "skill_type": "tool",
+      "category": "general",
+      "catalog_type": "core",
+      "config": {}
+    },
+    {
+      "skill_id": "slack-send-message",
+      "name": "Slack Send Message",
+      "description": "Send a message to a Slack channel (top-level) or thread",
+      "skill_type": "sandbox",
+      "category": "communication",
+      "catalog_type": "platform",
+      "config": {},
+      "resource_requirements": [
+        {
+          "name": "Slack Bot Token",
+          "env_var": "SLACK_BOT_TOKEN",
+          "description": "Slack Bot OAuth token (xoxb-...)"
+        }
+      ]
+    },
+    {
+      "skill_id": "text-to-speech",
+      "name": "Text to Speech",
+      "description": "Convert text to speech audio file using gTTS (free, no API key needed)",
+      "skill_type": "sandbox",
+      "category": "voice",
+      "catalog_type": "core",
+      "config": {}
+    },
+    {
+      "skill_id": "web-search",
+      "name": "Web Search",
+      "description": "Search the web for current information, news, and answers",
+      "skill_type": "tool",
+      "category": "general",
+      "catalog_type": "core",
+      "config": {}
+    }
+  ],
+  "gateways": [],
+  "routines": [
+    {
+      "name": "Morning Brief",
+      "description": "",
+      "schedule_human": "every weekday at 7:30am",
+      "schedule_cron": "30 7 * * 1-5",
+      "prompt": "Compile Ranjitha's Morning Brief. Read today's calendar and flag conflicts, overlaps, or unprotected focus time. Scan the inbox since yesterday evening and list emails awaiting her reply, grouped by urgency. Identify the top 3 priorities for the day and anything at risk of slipping. Keep it scannable: agenda, priorities, needs-reply, watch-outs. Deliver it as a clean, friendly brief in Ranjitha's voice.",
+      "output_channel": "",
+      "is_active": true
+    },
+    {
+      "name": "Inbox Triage Sweep",
+      "description": "",
+      "schedule_human": "every weekday at 12pm and 4pm",
+      "schedule_cron": "0 12,16 * * 1-5",
+      "prompt": "Sweep Ranjitha's inbox for anything new since the last sweep. Triage each email into Needs Ranjitha, Draft-and-hold, FYI, or Ignore. For Draft-and-hold items, prepare reply drafts in Ranjitha's voice and hold them for approval. Surface only the Needs-Ranjitha items to her with a one-line summary each. Note any threads going stale that need a nudge.",
+      "output_channel": "",
+      "is_active": true
+    }
+  ],
+  "triggers": [],
+  "mcp_connections": [],
+  "memories": [],
+  "knowledge_base": [],
+  "tools_config": {}
+}
